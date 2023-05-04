@@ -13,6 +13,7 @@ func main() {
 
 	if n == 1 {
 		fmt.Print(0)
+		return
 	}
 
 	if n == 2 {
@@ -22,13 +23,14 @@ func main() {
 			fmt.Println(1)
 			fmt.Print(nums[0])
 		}
+		return
 	}
 
 	var c, cl, l, r int
 
-	r = len(nums) - 1
-	c = len(nums) / 2
-	if len(nums)%2 == 0 {
+	r = n - 1
+	c = n / 2
+	if n%2 == 0 {
 		if nums[c] == nums[c-1] {
 			cl = 2
 			l = 0
@@ -41,7 +43,7 @@ func main() {
 		l = 0
 	}
 
-	for c < r && l < r {
+	for l < r {
 		if nums[l] == nums[r] {
 			l++
 			r--
@@ -50,10 +52,14 @@ func main() {
 				l++
 				cl = 1
 			} else {
+				for r < n && nums[l] != nums[r] {
+					r++
+				}
+				r--
 				c++
 				if nums[c-1] == nums[c] {
-					cl = 2
 					l++
+					cl = 2
 				} else {
 					l = 2*c - r
 				}
@@ -62,10 +68,13 @@ func main() {
 	}
 
 	l -= n - 1 - r
-	ans := nums[:l]
-	fmt.Println(l)
-	for i := l - 1; i > 0; i-- {
-		fmt.Print(ans[i], " ")
+	fmt.Print(l)
+	if l > 0 {
+		fmt.Println()
+		ans := nums[:l]
+		for i := l - 1; i > 0; i-- {
+			fmt.Print(ans[i], " ")
+		}
+		fmt.Print(ans[0])
 	}
-	fmt.Print(ans[0])
 }
