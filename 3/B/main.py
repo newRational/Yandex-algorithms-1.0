@@ -1,0 +1,1 @@
+print(str(sorted(set(map(int,input().split()))&set(map(int,input().split()))))[1:-1].replace(",", ""))
