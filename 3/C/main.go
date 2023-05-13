@@ -1,51 +1,52 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
+	"os"
 	"sort"
 )
 
-func Min(a, b int) int {
-	if a < b {
-		return a
+func Min(arg1, arg2 int) int {
+	if arg1 < arg2 {
+		return arg1
 	}
-	return b
+	return arg2
 }
 
-func printSlc(s []int) {
+func printSlc(w io.Writer, s []int) {
 	for _, i := range s {
-		fmt.Printf("%d ", i)
+		fmt.Fprintf(w, "%d ", i)
 	}
-	fmt.Println()
+	fmt.Fprintln(w)
 }
 
-func readMap(m map[int]struct{}, n int) {
+func readMap(r io.Reader, m map[int]struct{}, n int) {
 	var x int
 	for i := 0; i < n; i++ {
-		fmt.Scanf("%d", &x)
+		fmt.Fscanf(r, "%d\n", &x)
 		m[x] = struct{}{}
 	}
 }
 
 func main() {
 	var n, m int
-	fmt.Scanf("%d%d", &n, &m)
-	min := Min(m, n)
+	r := bufio.NewReader(os.Stdin)
+	w := bufio.NewWriter(os.Stdout)
+
+	fmt.Fscanf(r, "%d %d\n", &n, &m)
+
 	a := make(map[int]struct{}, n)
 	b := make(map[int]struct{}, m)
-	g := make(map[int]struct{}, min)
+	g := make(map[int]struct{}, Min(m, n))
 
-	var x int
-	for i := 0; i < n; i++ {
-		fmt.Scanf("%d", &x)
-		a[x] = struct{}{}
-	}
-	for i := 0; i < m; i++ {
-		fmt.Scanf("%d", &x)
-		b[x] = struct{}{}
-	}
+	readMap(r, a, n)
+	readMap(r, b, m)
 
-	gSlc := make([]int, 0, min)
+	aSlc := make([]int, 0)
+	bSlc := make([]int, 0)
+	gSlc := make([]int, 0)
 
 	for i := range a {
 		if _, ok := b[i]; ok {
@@ -53,9 +54,6 @@ func main() {
 			gSlc = append(gSlc, i)
 		}
 	}
-
-	aSlc := make([]int, 0, n-len(gSlc))
-	bSlc := make([]int, 0, m-len(gSlc))
 
 	for i := range a {
 		if _, ok := g[i]; !ok {
@@ -73,12 +71,14 @@ func main() {
 	sort.Slice(aSlc, func(i, j int) bool { return aSlc[i] < aSlc[j] })
 	sort.Slice(bSlc, func(i, j int) bool { return bSlc[i] < bSlc[j] })
 
-	fmt.Println(len(gSlc))
-	printSlc(gSlc)
+	fmt.Fprintln(w, len(gSlc))
+	printSlc(w, gSlc)
 
-	fmt.Println(len(aSlc))
-	printSlc(aSlc)
+	fmt.Fprintln(w, len(aSlc))
+	printSlc(w, aSlc)
 
-	fmt.Println(len(bSlc))
-	printSlc(bSlc)
+	fmt.Fprintln(w, len(bSlc))
+	printSlc(w, bSlc)
+
+	w.Flush()
 }
